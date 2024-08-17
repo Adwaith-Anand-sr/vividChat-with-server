@@ -1,0 +1,42 @@
+{
+   "expo": {
+      "name": "vividChat",
+      "slug": "vividChat",
+      "version": "1.0.0",
+      "orientation": "portrait",
+      "icon": "./assets/images/VIVIDCHAT_LOGO.png",
+      "scheme": "vividchat",
+      "userInterfaceStyle": "automatic",
+      "splash": {
+         "image": "./assets/images/VIVIDCHAT_SPLASH.png",
+         "resizeMode": "contain",
+         "backgroundColor": "#000000"
+      },
+      "ios": {
+         "supportsTablet": true
+      },
+      "android": {
+         "adaptiveIcon": {
+            "foregroundImage": "./assets/images/VIVIDCHAT_LOGO.png",
+            "backgroundColor": "#000000"
+         }
+      },
+      "web": {
+         "bundler": "metro",
+         "output": "static",
+         "favicon": "./assets/images/VIVIDCHAT_LOGO.png"
+      },
+      "plugins": [
+         "expo-router"
+      ],
+      "experiments": {
+         "typedRoutes": true
+      },
+      "extra": {
+         "apiUrl000": "http://localhost:3000",
+         "apiUrl": "https://vividchatserver.onrender.com",
+         "apiKey": "AIzaSyCpnv2wJbr2zLvmat7UgWh0l6yitU9LX6w",
+         "dbUrl": "https://vividchatapp-default-rtdb.firebaseio.com"
+      }
+   }
+}
