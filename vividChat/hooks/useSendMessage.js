@@ -5,7 +5,7 @@ const useSendMessage = () => {
 	const sendMessage = (participants, message, chatId) => {
 		if (!socket) return;
 		socket.emit("sendMessage", { message, chatId, participants });
-		socket.on("sendMessageRef", data => {
+		socket.on("sendMessageRes", data => {
 			console.log(data); 
 		});
 	};

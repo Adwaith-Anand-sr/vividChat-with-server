@@ -11,17 +11,16 @@ import { Image } from "expo-image";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { router } from "expo-router";
 import LottieView from "lottie-react-native";
-import AsyncStorage from "@react-native-async-storage/async-storage";
-import axios from "axios";
-import Constants from "expo-constants";
-const dbUrl = Constants.expoConfig.extra.dbUrl;
+
+import useReceiveMessage from "../../hooks/useReceiveMessage.js";
 
 const Chats = () => {
 	const [chats, setChats] = useState([]);
 	const [user, setUser] = useState(null);
 	const [loader, setLoader] = useState(true);
 	const [noChats, setNoChats] = useState(false);
-	//AsyncStorage.setItem('token', '')
+	
+	
 	
 	return (
 		<>

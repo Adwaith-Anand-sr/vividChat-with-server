@@ -9,14 +9,14 @@ const useGetUser = userId => {
 		if (!userId) return;
 		const fetchUser = () => {
 			socket.emit("getUser", userId); // Emit an event to fetch user details
-			socket.on("getUserRef", userData => {
+			socket.on("getUserRes", userData => {
 				setUser(userData)
 			});
 		};
 		fetchUser();
 
 		return () => {
-			socket.off("getUserRef");
+			socket.off("getUserRes");
 		};
 	}, [userId, socket]);
 

@@ -10,7 +10,7 @@ export default function RootLayout() {
 				<Stack.Screen name="Auth" options={{ headerShown: false }} />
 				<Stack.Screen name="(home)" options={{ headerShown: false }} />
 				<Stack.Screen name="Others/AllUsers" options={{ headerShown: false }} />
-            <Stack.Screen name="Chat/[Id]" options={{ headerShown: false }} />
+            <Stack.Screen name="Chat/[id]" options={{ headerShown: false }} />
 			</Stack>
 		</SocketProvider>
 	);

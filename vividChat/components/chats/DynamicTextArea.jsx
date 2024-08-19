@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { TextInput, View, StyleSheet } from "react-native";
 
-const DynamicTextArea = ({ message, setMessage }) => {
+const TextArea = ({ message, setMessage }) => {
 	const [height, setHeight] = useState(45);
 	const [marginBottom, setMarginBottom] = useState(5);
 
@@ -45,4 +45,4 @@ const styles = StyleSheet.create({
 	}
 });
 
-export default DynamicTextArea;
+export default TextArea;
