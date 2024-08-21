@@ -3,9 +3,9 @@ import {
 	View,
 	Text,
 	ScrollView,
-	StatusBar,
 	TouchableOpacity
 } from "react-native";
+import { StatusBar } from "expo-status-bar";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Image } from "expo-image";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
@@ -20,14 +20,12 @@ const Chats = () => {
 	const [loader, setLoader] = useState(true);
 	const [noChats, setNoChats] = useState(false);
 	
-	
-	
 	return (
 		<>
 			<SafeAreaView style={{ flex: 1, backgroundColor: "black" }}>
 				<StatusBar
-					barStyle="light-content"
-					backgroundColor="rgb(24, 24, 27)"
+					style="light"
+					backgroundColor="black"
 				/>
 				<View className="h-full bg-zinc-950">
 					<View className="bg-zinc-950 my-5 ml-3">

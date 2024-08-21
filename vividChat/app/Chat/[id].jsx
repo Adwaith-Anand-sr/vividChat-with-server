@@ -2,18 +2,17 @@ import React, { useState, useEffect, useRef } from "react";
 import {
 	View,
 	Text,
-	StatusBar,
-	TouchableOpacity,
 	KeyboardAvoidingView,
 	Platform,
-	Dimensions
+	Dimensions,
+	ActivityIndicator
 } from "react-native";
+import { StatusBar } from 'expo-status-bar';
 import { useRoute } from "@react-navigation/native";
 import { router } from "expo-router";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import AntDesign from "@expo/vector-icons/AntDesign";
 import { SafeAreaView } from "react-native-safe-area-context";
-import LottieView from "lottie-react-native";
 import { FlashList } from "@shopify/flash-list";
 
 import DynamicTextArea from "../../components/chats/DynamicTextArea.jsx";
@@ -27,8 +26,6 @@ import useGetUser from "../../hooks/useGetUser.js";
 import useReceiveMessage from "../../hooks/useReceiveMessage.js";
 import useGetChatMessages from "../../hooks/useGetChatMessages.js";
 
-const { height: screenHeight } = Dimensions.get("window");
-
 const Chat = () => {
 	const route = useRoute();
 	const { id } = route.params;
@@ -37,15 +34,12 @@ const Chat = () => {
 	const [chatId, setChatId] = useState(null);
 	const [message, setMessage] = useState("");
 	const [messages, setMessages] = useState([]);
-	const [chatLen, setChatLen] = useState(0);
-	const [isNearBottom, setisBottom] = useState(true);
-	const [isBottom, setIsBottom] = useState(true);
-	const PAGE_SIZE = 30; // Updated page size
+	const [isMessagesLoading, setIsMessagesLoading] = useState(true);
+	const [itemHeights, setItemHeights] = useState({});
 	const [page, setPage] = useState(1);
-	const flashListRef = useRef(null);
-	const oldContentHeightRef = useRef(0);
-	const scrollPositionRef = useRef(0);
+	const PAGE_SIZE = 100;
 
+	const flashListRef = useRef(null);
 
 	const { chats, loading, hasMore } = useGetChatMessages(
 		chatId,
@@ -62,7 +56,7 @@ const Chat = () => {
 			setUserId(id);
 		};
 		fetchUserId();
-	}, []); //setUserId
+	}, []); //fetchUserId
 
 	useEffect(() => {
 		const fetchChatId = async () => {
@@ -72,53 +66,35 @@ const Chat = () => {
 			}
 		};
 		fetchChatId();
-	}, [userId, chatPartnerId]); //setChatId
+	}, [userId, chatPartnerId]); //fetchChatId
 
 	useEffect(() => {
 		if (chats && chats.length > 0) {
-		   let len = 0
 			setMessages(prevMessages => {
 				const existingDataIds = new Set(prevMessages.map(item => item._id));
-				const filteredNewData = chats.filter(
-					item => !existingDataIds.has(item._id)
-				);
-				setChatLen(filteredNewData.length - chatLen);
-				len = filteredNewData.length
-				console.log("chatLen", chatLen);
-				return [...filteredNewData, ...prevMessages];
+				const filteredNewData = chats
+					.filter(item => !existingDataIds.has(item._id)) // Filter out existing data
+					.sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp)); // Sort by timestamp in descending order
+				return [...prevMessages, ...filteredNewData];
 			});
-			setTimeout(() => {
-				if (flashListRef.current) {
-					console.log("l", len);
-					flashListRef.current.scrollToOffset({
-							offset: scrollPositionRef.current + len * 60,
-				 			animated: false
-						});
-				}
-			}, 500);
 		}
-	}, [chats]);
+	}, [chats]); //setMessages
 
 	useEffect(() => {
-		if (isBottom) {
-			console.log(isBottom);
-			setTimeout(() => {
-				if (flashListRef && flashListRef.current) {
-					flashListRef.current.scrollToIndex({
-						index: messages.length - 1,
-						animated: true
-					});
-				}
-			});
-		} 
-	}, [messages]);
+		const timeout = setTimeout(() => {
+			setIsMessagesLoading(false);
+		}, 1500);
+		return () => {
+			clearTimeout(timeout);
+		};
+	}, []);
 
 	const loadMoreChats = () => {
+		console.log("loading...");
 		if (!loading && hasMore) {
 			setPage(prevPage => prevPage + 1);
 		}
 	};
-
 	const handleSendMessage = () => {
 		if (message.trim() === "") return;
 		try {
@@ -133,24 +109,18 @@ const Chat = () => {
 			console.error("Error sending message:", error);
 		}
 	};
-
-	const handleScroll = event => {
-		if (!event || !event.nativeEvent) return;
-		const { contentOffset, layoutMeasurement, contentSize } =
-			event.nativeEvent;
-		if (!contentOffset || !layoutMeasurement || !contentSize) return;
-
-		const contentHeight = contentSize.height;
-		const contentOffsetY = contentOffset.y;
-		const distanceFromBottom =
-			contentHeight - contentOffsetY - layoutMeasurement.height;
-
-		setIsBottom(distanceFromBottom <= 0);
-      console.log("contentOffsetY", contentOffsetY)
-		if (contentOffsetY <= (60*page+30) && hasMore && !loading) {
-			loadMoreChats();
-			console.log("loading chats...");
+	const onLayout = (event, id) => {
+		const { height } = event.nativeEvent.layout;
+		setItemHeights(prev => ({ ...prev, [id]: height }));
+	};
+	const getEstimatedItemSize = () => {
+		const sizes = Object.values(itemHeights);
+		if (sizes.length === 0) {
+			return 60;
 		}
+		const averageSize = sizes.reduce((a, b) => a + b, 0) / sizes.length;
+		const margin = 10;
+		return averageSize + margin;
 	};
 
 	return (
@@ -160,23 +130,36 @@ const Chat = () => {
 				style={{ flex: 1 }}
 				behavior={Platform.OS === "ios" ? "padding" : undefined}
 				keyboardVerticalOffset={Platform.OS === "ios" ? 64 : 0}>
-				<View style={{ flex: 1 }}>
-					<Top chatPartner={chatPartner} />
+				<Top chatPartner={chatPartner} />
+				<View
+					style={{ flex: 1 }}
+					className={isMessagesLoading ? " opacity-0" : "opacity-1"}>
 					<FlashList
 						ref={flashListRef}
 						data={messages}
-						renderItem={({ item }) => (
-							<ChatItem item={item} userId={userId} />
-						)}
+						inverted
+						renderItem={({ item }) =>
+							item ? (
+								<ChatItem
+									item={item}
+									userId={userId}
+									onLayout={onLayout}
+								/>
+							) : null
+						}
+						onEndReached={loadMoreChats}
+						onEndReachedThreshold={0.8}
+						ListFooterComponent={
+							loading ? <ActivityIndicator size="small" /> : null
+						}
 						keyExtractor={item => item._id.toString()}
-						stableId={item => item._id.toString()}
-						estimatedItemSize={60}
-						onScroll={handleScroll}
+						estimatedItemSize={getEstimatedItemSize()}
 						contentContainerStyle={{ paddingTop: 20 }}
 					/>
 				</View>
 				<Footer
 					setMessage={setMessage}
+					inverted={true}
 					handleSendMessage={handleSendMessage}
 					message={message}
 				/>

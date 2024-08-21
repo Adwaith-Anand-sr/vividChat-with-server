@@ -12,17 +12,22 @@ const formatTime = timestamp => {
 	return `${hours}:${minutes} ${ampm}`;
 };
 
-const ChatItem = ({ item, userId }) => {
+const ChatItem = ({ item, userId, onLayout }) => {
 	return (
-		<View key={item._id} style={{height: 60}} className="py-2 mx-2">
+		<View
+			key={item._id}
+			className="py-2 mx-2"
+			onLayout={(event) => onLayout(event, item.id)}
+    >
 			<View
 				style={[
 					{
-						alignSelf: item.sender === userId ? "flex-end" : "flex-start"
-					}
+						alignSelf: item.sender === userId ? "flex-end" : "flex-start",
+					},
 				]}
-				className="relative bg-zinc-900 py-1 max-w-[85%] min-w-[25%] px-4 pb-5 rounded-lg w-auto flex">
-				<Text className="text-white font-normal text-[3.85vw]">
+				className="relative bg-zinc-900 py-1 max-w-[85%] min-w-[25%] px-4 pb-5 rounded-lg w-auto flex"
+			>
+				<Text className="text-white tracking-widest font-normal leading-9 text-[4vw]">
 					{item.message}
 				</Text>
 				<Text className="absolute right-0 mr-2 text-white font-semibold text-[2.5vw] bottom-1 text-zinc-500">

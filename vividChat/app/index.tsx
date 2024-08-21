@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
-import { View, Text, StatusBar } from "react-native";
+import { View, Text } from "react-native";
+import { StatusBar } from 'expo-status-bar';
 import { router } from "expo-router";
 import { SafeAreaView } from "react-native-safe-area-context";
 import AsyncStorage from "@react-native-async-storage/async-storage";
@@ -37,8 +38,8 @@ const Index = () => {
 	return (
 		<SafeAreaView>
 			<StatusBar
-				barStyle="light-content"
-				backgroundColor="rgb(24, 24, 27)"
+				style="light"
+				backgroundColor="black"
 			/>
 			<View className="bg-zinc-800 h-full flex justify-center items-center">
 				<Text className="absolute tracking-tighter z-50 text-white font-black text-7xl">

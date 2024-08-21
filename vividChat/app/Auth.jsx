@@ -5,8 +5,8 @@ import {
 	TextInput,
 	TouchableOpacity,
 	Pressable,
-	StatusBar
 } from "react-native";
+import { StatusBar } from 'expo-status-bar';
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Link, router } from "expo-router";
 import AsyncStorage from "@react-native-async-storage/async-storage";
@@ -93,8 +93,8 @@ const Auth = () => {
 		<>
 			<SafeAreaView>
 				<StatusBar
-					barStyle="light-content"
-					backgroundColor="rgb(24, 24, 27)"
+					style="light"
+					backgroundColor="black"
 				/>
 				{!isNewUser ? (
 					<Login

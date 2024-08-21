@@ -10,7 +10,6 @@ const useGetData = (chatId, page, limit) => {
 	const fetchData = useCallback(() => {
 		if (!socket || !chatId) return;
 		setLoading(true);
-		console.log('fetchData');
 		socket.emit("getChatMessages", { chatId, page, limit });
 	}, [socket, chatId, page, limit]);
 

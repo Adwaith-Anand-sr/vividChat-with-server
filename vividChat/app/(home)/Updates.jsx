@@ -1,14 +1,12 @@
 import React from "react";
-import { View, Text, StatusBar, StyleSheet } from "react-native";
+import { View, Text, StyleSheet } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
+import { StatusBar } from "expo-status-bar";
 
 const Updates = () => {
 	return (
 		<SafeAreaView style={styles.safeArea}>
-			<StatusBar
-				barStyle="light-content"
-				backgroundColor="rgb(24, 24, 27)"
-			/>
+			<StatusBar style="light" backgroundColor="black" />
 			<View style={styles.container}>
 				<Text style={styles.text}>Updates.</Text>
 			</View>

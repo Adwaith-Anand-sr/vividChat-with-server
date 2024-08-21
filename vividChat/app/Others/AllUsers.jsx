@@ -2,10 +2,10 @@ import React, { useState, useEffect } from "react";
 import {
 	View,
 	Text,
-	StatusBar,
 	TouchableOpacity,
 	ActivityIndicator
 } from "react-native";
+import { StatusBar } from 'expo-status-bar';
 import { SafeAreaView } from "react-native-safe-area-context";
 import { AntDesign } from "@expo/vector-icons";
 import { Image } from "expo-image";
