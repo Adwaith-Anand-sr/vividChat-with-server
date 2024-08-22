@@ -9,14 +9,16 @@ const TextArea = ({ message, setMessage }) => {
 		<View style={[styles.textAreaContainer, { marginBottom: marginBottom }]}>
 			<TextInput
 				style={[styles.textInput, { height: Math.max(45, height) }]}
-				onChangeText={text => setText(text)}
-				onChangeText={setMessage}
+				onChangeText={text => {
+					setMessage(text);
+				}}
 				value={message}
+				//onBlur={handleStopTyping}
 				placeholderTextColor="rgb(208,208,208)"
 				multiline
 				onContentSizeChange={event => {
 					const newHeight = event.nativeEvent.contentSize.height;
-					if (newHeight < 80) {
+					if (newHeight < 120) {
 						setHeight(newHeight);
 						setMarginBottom(5 + (newHeight - 40));
 					}

@@ -1,11 +1,19 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { View, Text, TouchableOpacity } from "react-native";
 import LottieView from "lottie-react-native";
 import { router } from "expo-router";
 import { Image } from "expo-image";
 import AntDesign from "@expo/vector-icons/AntDesign";
+import { useFocusEffect } from "@react-navigation/native";
 
-const Top = ({chatPartner}) => {
+import useOnTyping from "../../hooks/chats/useOnTyping.js";
+import useGetOnlineStatus from "../../hooks/chats/useGetOnlineStatus.js";
+
+const Top = ({ chatPartner }) => {
+	const isTyping = useOnTyping();
+	const isOnline = useGetOnlineStatus(chatPartner);
+   
+
 	return (
 		<View className="flex-row bg-neutral-900 px-3 items-center h-[8vh]">
 			<TouchableOpacity onPress={() => router.back()}>
@@ -19,9 +27,17 @@ const Top = ({chatPartner}) => {
 				/>
 			</View>
 			{chatPartner?.username ? (
-				<Text className="text-white text-2xl font-black tracking-tighter">
-					{chatPartner.username}
-				</Text>
+				<View className="flex gap-0">
+					<Text className="text-white text-2xl font-black tracking-tighter">
+						{chatPartner.username}
+					</Text>
+					
+					{isOnline ? (
+						<Text className="text-green-500 text-[2.85vw] tracking-tighter">
+							{isTyping ? 'typing...' : 'online'}
+						</Text>
+					) : null}
+				</View>
 			) : (
 				<View className="flex -ml-4 justify-center h-full">
 					<LottieView

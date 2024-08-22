@@ -27,7 +27,7 @@ const ChatItem = ({ item, userId, onLayout }) => {
 				]}
 				className="relative bg-zinc-900 py-1 max-w-[85%] min-w-[25%] px-4 pb-5 rounded-lg w-auto flex"
 			>
-				<Text className="text-white tracking-widest font-normal leading-9 text-[4vw]">
+				<Text className="text-white tracking-widest font-normal leading-7 text-[4vw]">
 					{item.message}
 				</Text>
 				<Text className="absolute right-0 mr-2 text-white font-semibold text-[2.5vw] bottom-1 text-zinc-500">

@@ -13,6 +13,7 @@ export const SocketProvider = ({ children }) => {
 					socket.on("connect", () => {
 						socket.emit("join", userId);
 					});
+				   socket.emit("join", userId);
 				}
 			} catch (error) {
 				console.error("Failed to initialize socket", error);

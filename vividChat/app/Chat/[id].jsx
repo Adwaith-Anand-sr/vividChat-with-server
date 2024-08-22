@@ -7,24 +7,26 @@ import {
 	Dimensions,
 	ActivityIndicator
 } from "react-native";
-import { StatusBar } from 'expo-status-bar';
+import { StatusBar } from "expo-status-bar";
 import { useRoute } from "@react-navigation/native";
 import { router } from "expo-router";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import AntDesign from "@expo/vector-icons/AntDesign";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { FlashList } from "@shopify/flash-list";
+import { useFocusEffect } from "@react-navigation/native";
 
 import DynamicTextArea from "../../components/chats/DynamicTextArea.jsx";
 import Footer from "../../components/chats/Footer.jsx";
 import Top from "../../components/chats/Top.jsx";
 import ChatItem from "../../components/chats/ChatItem.jsx";
 
-import useSendMessage from "../../hooks/useSendMessage.js";
 import generateChatId from "../../utils/chats/generateChatId.js";
 import useGetUser from "../../hooks/useGetUser.js";
-import useReceiveMessage from "../../hooks/useReceiveMessage.js";
-import useGetChatMessages from "../../hooks/useGetChatMessages.js";
+import useReceiveMessage from "../../hooks/chats/useReceiveMessage.js";
+import useSendMessage from "../../hooks/chats/useSendMessage.js";
+import useEmitTypingStatus from "../../hooks/chats/useEmitTypingStatus.js";
+import useGetChatMessages from "../../hooks/chats/useGetChatMessages.js";
 
 const Chat = () => {
 	const route = useRoute();
@@ -34,6 +36,7 @@ const Chat = () => {
 	const [chatId, setChatId] = useState(null);
 	const [message, setMessage] = useState("");
 	const [messages, setMessages] = useState([]);
+	const [isTyping, setIsTyping] = useState(false);
 	const [isMessagesLoading, setIsMessagesLoading] = useState(true);
 	const [itemHeights, setItemHeights] = useState({});
 	const [page, setPage] = useState(1);
@@ -48,12 +51,17 @@ const Chat = () => {
 	);
 	const chatPartner = useGetUser(chatPartnerId);
 	const sendMessage = useSendMessage();
-	const newMessage = useReceiveMessage();
+	const newMessage = useReceiveMessage(setMessages);
+	const setTyping = useEmitTypingStatus();
+
+	useFocusEffect(() => {
+		setPage(1);
+	});
 
 	useEffect(() => {
 		const fetchUserId = async () => {
 			const id = await AsyncStorage.getItem("userId");
-			setUserId(id);
+			if (id) setUserId(id);
 		};
 		fetchUserId();
 	}, []); //fetchUserId
@@ -62,7 +70,7 @@ const Chat = () => {
 		const fetchChatId = async () => {
 			if (userId) {
 				const id = await generateChatId(userId, chatPartnerId);
-				setChatId(id);
+				if (id) setChatId(id);
 			}
 		};
 		fetchChatId();
@@ -83,14 +91,25 @@ const Chat = () => {
 	useEffect(() => {
 		const timeout = setTimeout(() => {
 			setIsMessagesLoading(false);
-		}, 1500);
+		}, 1800);
 		return () => {
 			clearTimeout(timeout);
 		};
 	}, []);
 
+	useEffect(() => {
+		if (isMessagesLoading) return;
+		if (!isTyping) {
+			setIsTyping(true);
+			setTyping(userId, chatPartnerId, true);
+		}
+		if (!message) {
+			setTyping(userId, chatPartnerId, false);
+			setIsTyping(false);
+		}
+	}, [message, userId, chatPartnerId]);
+
 	const loadMoreChats = () => {
-		console.log("loading...");
 		if (!loading && hasMore) {
 			setPage(prevPage => prevPage + 1);
 		}
@@ -100,8 +119,17 @@ const Chat = () => {
 		try {
 			if (userId && chatId) {
 				const participants = { sender: userId, receiver: chatPartnerId };
-				sendMessage(participants, message, chatId);
+				let msg = {
+				   _id: new Date(),
+					sender: userId,
+					receiver: chatPartnerId,
+					message,
+					chatId,
+					timestamp: new Date()
+				};
+				setMessages(prev => [msg, ...prev]);
 				setMessage("");
+				sendMessage(participants, msg.message, chatId);
 			} else {
 				console.error("User ID is not available.");
 			}
@@ -159,7 +187,6 @@ const Chat = () => {
 				</View>
 				<Footer
 					setMessage={setMessage}
-					inverted={true}
 					handleSendMessage={handleSendMessage}
 					message={message}
 				/>

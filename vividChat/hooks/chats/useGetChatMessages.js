@@ -1,5 +1,5 @@
 import { useState, useEffect, useCallback } from "react";
-import { useSocket } from "../contexts/SocketContext.js";
+import { useSocket } from "../../contexts/SocketContext.js";
 
 const useGetData = (chatId, page, limit) => {
 	const [chats, setChats] = useState([]);
@@ -24,7 +24,6 @@ const useGetData = (chatId, page, limit) => {
 					const filteredNewData = newData.filter(
 						item => !existingDataIds.has(item._id)
 					);
-					console.log('data returning...');
 					return [...prevData, ...filteredNewData];
 				});
 				setHasMore(newData.length === limit);

@@ -1,15 +1,15 @@
 import { useState, useEffect, useCallback } from "react";
-import { useSocket } from "../contexts/SocketContext.js";
+import { useSocket } from "../../contexts/SocketContext.js";
 
-const useReceiveMessage = () => {
+const useReceiveMessage = (setMessages) => {
 	const socket = useSocket();
 	
 	const fetchMessages = useCallback(() => {
 		if (!socket) return;
 		
-		const handleReceiveMessage = newMessage => {
-		   alert('hh')
-		   console.log("new", newMessage)
+		const handleReceiveMessage = chat => {
+		   console.log("new", chat)
+		   setMessages(prev=> [chat, ...prev])
 		};
 
 		socket.on("receiveMessage", handleReceiveMessage);
