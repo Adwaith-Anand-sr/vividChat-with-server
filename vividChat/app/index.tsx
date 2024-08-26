@@ -3,8 +3,8 @@ import { View, Text } from "react-native";
 import { StatusBar } from 'expo-status-bar';
 import { router } from "expo-router";
 import { SafeAreaView } from "react-native-safe-area-context";
-import AsyncStorage from "@react-native-async-storage/async-storage";
 import LottieView from "lottie-react-native";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 import isTokenExpired from "../utils/authentication/isTokenExpired.js";
 import checkHealth from "../utils/server/checkHealth.js";
@@ -16,8 +16,9 @@ const Index = () => {
 		const checkToken = async () => {
 			try {
 				const storedToken = await AsyncStorage.getItem("token");
+				const pushToken = await AsyncStorage.getItem("pushToken");
 				if (await checkHealth()) {
-					if (storedToken && !isTokenExpired(storedToken)) {
+					if (storedToken && pushToken && !isTokenExpired(storedToken)) {
 						router.replace("(home)");
 					} else {
 						router.replace("Auth");

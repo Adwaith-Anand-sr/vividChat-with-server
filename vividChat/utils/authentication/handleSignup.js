@@ -3,6 +3,7 @@ import axios from "axios";
 import Constants from "expo-constants";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
+import handleUserAuthenticated from '../notification/handleUserAuthenticated.js'
 const apiUrl = Constants.expoConfig.extra.apiUrl;
 
 const handleSignup = async (username, email, password) => {
@@ -11,6 +12,7 @@ const handleSignup = async (username, email, password) => {
 		if(res.status === 200 && res.data.data) {
 		   await AsyncStorage.setItem("token", res.data.data.token);
 		   await AsyncStorage.setItem("userId", res.data.data.userId);
+		   handleUserAuthenticated(res.data.data.userId);
 		   return true;
 		}
 		else return res.data.message;

@@ -26,6 +26,7 @@ import useGetUser from "../../hooks/useGetUser.js";
 import useReceiveMessage from "../../hooks/chats/useReceiveMessage.js";
 import useSendMessage from "../../hooks/chats/useSendMessage.js";
 import useEmitTypingStatus from "../../hooks/chats/useEmitTypingStatus.js";
+import useEmitReadMessage from "../../hooks/chats/useEmitReadMessage.js";
 import useGetChatMessages from "../../hooks/chats/useGetChatMessages.js";
 
 const Chat = () => {
@@ -51,8 +52,9 @@ const Chat = () => {
 	);
 	const chatPartner = useGetUser(chatPartnerId);
 	const sendMessage = useSendMessage();
-	const newMessage = useReceiveMessage(setMessages);
+	const newMessage = useReceiveMessage(setMessages, chatId);
 	const setTyping = useEmitTypingStatus();
+	const setRead = useEmitReadMessage();
 
 	useFocusEffect(() => {
 		setPage(1);
@@ -85,6 +87,7 @@ const Chat = () => {
 					.sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp)); // Sort by timestamp in descending order
 				return [...prevMessages, ...filteredNewData];
 			});
+			setRead(userId, chatPartnerId, chatId);
 		}
 	}, [chats]); //setMessages
 

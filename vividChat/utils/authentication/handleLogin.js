@@ -3,11 +3,11 @@ import axios from "axios";
 import Constants from "expo-constants";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
+import handleUserAuthenticated from '../notification/handleUserAuthenticated.js'
 const apiUrl = Constants.expoConfig.extra.apiUrl;
 
 const handleLogin = async (username, password) => {
 	try {
-		await AsyncStorage.setItem("idToken", "idToken");
 		let res = await axios.post(`${apiUrl}/signin`, {
 			username,
 			password
@@ -15,6 +15,7 @@ const handleLogin = async (username, password) => {
 		if(res.status === 200 && res.data.token) {
 		   await AsyncStorage.setItem("token", res.data.token);
 		   await AsyncStorage.setItem("userId", res.data.userId);
+		   handleUserAuthenticated(res.data.userId);
 		   return true;
 		}
 		else return res.data.message

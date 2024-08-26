@@ -25,6 +25,7 @@ const AllUsers = () => {
 		loading,
 		hasMore
 	} = useGetAllUsers(page, PAGE_SIZE);
+	
 	const handleOpenChat = id => {
 		try {
 			router.replace(`Chat/${id}`);
