@@ -3,6 +3,8 @@ import React from "react";
 import { Stack } from "expo-router";
 import { StateProvider } from "../contexts/stateContext.js";
 import { SocketProvider } from "../contexts/SocketContext.js";
+import FlashMessage from "react-native-flash-message";
+
 
 export default function RootLayout() {
 	return (
@@ -21,6 +23,7 @@ export default function RootLayout() {
 						options={{ headerShown: false }}
 					/>
 				</Stack>
+				<FlashMessage position="top" /> 
 			</SocketProvider>
 		</StateProvider>
 	);

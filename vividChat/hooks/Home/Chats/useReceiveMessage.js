@@ -1,6 +1,7 @@
 import { useEffect, useCallback, useState } from "react";
 import { useSocket } from "../../../contexts/SocketContext.js";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import customToastMessage from '../../../components/ToastMessage/customToastMessage.js'
 
 const useReceiveMessage = (setChatList, user) => {
 	const socket = useSocket();
@@ -17,7 +18,7 @@ const useReceiveMessage = (setChatList, user) => {
 	const fetchMessages = useCallback(() => {
 		if (!socket) return;
 
-		const handleReceiveMessage = ({ participants, message, chatId }) => {
+		const handleReceiveMessage = ({ participants, message, chatId, senderUsername}) => {
 			setChatList(prevChats => {
 				const updatedChats = prevChats.map(chat => {
 					if (chatId && chat.chatId && participants && participants.receiver && message.message && participants.sender && chat.chatId === chatId ) {
@@ -30,10 +31,11 @@ const useReceiveMessage = (setChatList, user) => {
 				});
 				return [...updatedChats];
 			});
+			if(senderUsername && message && message.message) customToastMessage(senderUsername, message.message)
 		}
 		
 		
-		const handleMessageReceived = ({ participants, chatId }) => {
+		const handleMessageReceived = ({ chatId }) => {
 			setChatList(prevChats => {
 				const updatedChats = prevChats.map(chat => {
 					if (chat.chatId === chatId) {

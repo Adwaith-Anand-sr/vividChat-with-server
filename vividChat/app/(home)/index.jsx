@@ -7,6 +7,7 @@ import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { FlashList } from "@shopify/flash-list";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { router } from "expo-router";
+import customToastMessage from '../../components/ToastMessage/customToastMessage.js'
 
 import Top from "../../components/Home/Chats/Top.jsx";
 import Loader from "../../components/Home/Chats/Loader.jsx";
@@ -17,15 +18,14 @@ import useGetUserChatLists from "../../hooks/Home/Chats/useGetUserChatLists.js";
 import useReceiveMessage from "../../hooks/Home/Chats/useReceiveMessage.js";
 import useOnReadMessages from "../../hooks/Home/Chats/useOnReadMessages.js";
 
-import { useStateContext } from '../../contexts/stateContext.js';
+import { useStateContext } from "../../contexts/stateContext.js";
 
 const Chats = () => {
 	const [user, setUser] = useState(null);
 	const [loader, setLoader] = useState(true);
-	
-   
-   const { chatList, setChatList } = useStateContext();
-   
+
+	const { chatList, setChatList } = useStateContext();
+
 	const { users } = useGetUserChatLists(user);
 	useNotificationHandlers();
 	useReceiveMessage(setChatList, user);
@@ -33,15 +33,16 @@ const Chats = () => {
 
 	useEffect(() => {
 		const fetchUserId = async () => {
-			let usr = await AsyncStorage.getItem("userId");
+         let usr = await AsyncStorage.getItem("userId");
 			setUser(usr);
+			customToastMessage('adwaith', 'heyyyy')
 		};
 		fetchUserId();
 	}, [setUser]);
 
 	useEffect(() => {
 		if (users && users.length > 0) {
-		   setChatList(users)
+			setChatList(users);
 			setLoader(false);
 		}
 	}, [users]); //setMessages

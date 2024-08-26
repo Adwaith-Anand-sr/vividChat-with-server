@@ -3,6 +3,7 @@ import React from "react";
 import { View, Text } from "react-native";
 import { FontAwesome, Ionicons, FontAwesome6 } from "@expo/vector-icons";
 
+
 export default function TabLayout() {
 	return (
 		<Tabs
